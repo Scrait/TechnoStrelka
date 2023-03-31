@@ -16,6 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import ru.scrait.technostrelka.MainActivity;
 import ru.scrait.technostrelka.ui.auth.AuthActivity;
 
@@ -24,6 +27,7 @@ public class ProfileUtils {
     private static String email;
     private static float balance;
     private static float reserved;
+    private static float recommendedBudget;
     private static DatabaseReference databaseReferenceBalance;
     private static DatabaseReference databaseReferenceReserved;
 
@@ -77,11 +81,49 @@ public class ProfileUtils {
 
     static void update(float balance, float reserved, String email) {
         try {
-            MainActivity.textBalance.setText("Баланс:" + balance + " руб, Зарезервированно: " + reserved + " руб");
+            calculateRecommendedBudget();
+            MainActivity.textBalance.setText("Баланс: " + balance + " руб, Зарезервированно: " + reserved + " руб, Планирование бюджета: " + recommendedBudget + " руб");
             MainActivity.textEmail.setText(email);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+    }
+
+    private static void calculateRecommendedBudget() {
+
+        DatabaseReference dbReferenceWastedSum = FirebaseDatabase.getInstance().getReference(AuthActivity.USER_KEY).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("wastedSumForAllTime");
+        DatabaseReference dbReferenceDateOfRegistration = FirebaseDatabase.getInstance().getReference(AuthActivity.USER_KEY).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("date");
+
+        dbReferenceWastedSum.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String wastedSum = String.valueOf(snapshot.getValue());
+                //recommendedBudget = Integer.parseInt(wastedSum);
+
+                // Very ugly solution, sorry
+                dbReferenceDateOfRegistration.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Date rawDate = new Date(String.valueOf(snapshot.getValue()));
+                        Date nowDay = Calendar.getInstance().getTime();
+                        Integer countOfMonth = (nowDay.getYear() - rawDate.getYear()) * 12 + nowDay.getMonth() - rawDate.getMonth() + 1;
+
+                        recommendedBudget = Float.parseFloat(wastedSum) / countOfMonth;
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
     }
 }

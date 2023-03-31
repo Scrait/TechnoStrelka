@@ -31,8 +31,10 @@ import ru.scrait.technostrelka.ui.auth.AuthActivity;
 public class DialogUtils {
     private static float balance;
     private static float reserved;
+    public static float wasted;
     private static DatabaseReference databaseReferenceBalance = null;
     private static DatabaseReference databaseReferenceReserved = null;
+    private static DatabaseReference databaseReferenceWasted = null;
 
     public static void onNewTransaction(String sumFromReceipt, Context context, View view) {
         updateBD(context);
@@ -56,6 +58,7 @@ public class DialogUtils {
                         @Override
                         public void onSuccess(Void unused) {
                             databaseReferenceBalance.setValue(balance - Float.parseFloat(sumFromReceipt));
+                            databaseReferenceWasted.setValue(wasted + Float.parseFloat(sumFromReceipt));
                             Snackbar.make(view, "Трата успешно добавлена", Snackbar.LENGTH_LONG).show();
                             updateBD(context);
                         }
@@ -89,6 +92,7 @@ public class DialogUtils {
                                 databaseReferenceBalance.setValue(balance + Float.parseFloat(sum.getText().toString()));
                             } else {
                                 databaseReferenceBalance.setValue(balance - Float.parseFloat(sum.getText().toString()));
+                                databaseReferenceWasted.setValue(wasted + Float.parseFloat(sum.getText().toString()));
                             }
                             Snackbar.make(view, "Трата успешно добавлена", Snackbar.LENGTH_LONG).show();
                             updateBD(context);
@@ -141,6 +145,7 @@ public class DialogUtils {
         if (currentUser != null) {
             databaseReferenceBalance = myRefetance.child(currentUser.getUid()).child("balance");
             databaseReferenceReserved = myRefetance.child(currentUser.getUid()).child("reservedSum");
+            databaseReferenceWasted = myRefetance.child(currentUser.getUid()).child("wastedSumForAllTime");
             databaseReferenceBalance.addListenerForSingleValueEvent(new ValueEventListener() {
                 @SuppressLint("MissingPermission")
                 @Override
@@ -169,6 +174,17 @@ public class DialogUtils {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     reserved = snapshot.getValue(Float.class);
                     ProfileUtils.update(balance, reserved, currentUser.getEmail());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            databaseReferenceWasted.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    wasted = snapshot.getValue(Float.class);
                 }
 
                 @Override

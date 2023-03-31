@@ -7,6 +7,7 @@ public class User {
     public float balance;
     public float reservedSum;
     public String date;
+    public float wastedSumForAllTime;
 
     public User(String email, String password) {
         this.email = email;
@@ -14,5 +15,6 @@ public class User {
         this.date = new Date().toString();
         this.balance = 0;
         this.reservedSum = 0;
+        this.wastedSumForAllTime = 0;
     }
 }
