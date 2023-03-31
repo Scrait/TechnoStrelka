@@ -61,6 +61,7 @@ public class DialogUtils {
                         }
                     });
                     dialog.dismiss();
+                    //Snackbar.make(view, "Трата успешно добавлена", Snackbar.LENGTH_LONG).show();
                 }
             });
         } else {
@@ -94,6 +95,7 @@ public class DialogUtils {
                         }
                     });
                     dialog.dismiss();
+                    //Snackbar.make(view, "Доход/Расход успешно добавлен", Snackbar.LENGTH_LONG).show();
                 }
             });
         }
@@ -118,6 +120,7 @@ public class DialogUtils {
 
                 dialog.dismiss();
                 updateBD(context);
+                Snackbar.make(view, "Резервирование успешно добавлено", Snackbar.LENGTH_LONG).show();
             }
         });
     }

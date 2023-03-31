@@ -76,7 +76,12 @@ public class ProfileUtils {
     }
 
     static void update(float balance, float reserved, String email) {
-        MainActivity.textBalance.setText("Баланс:" + String.valueOf(balance) + " руб, Зарезервированно: " + reserved + " руб");
-        MainActivity.textEmail.setText(email);
+        try {
+            MainActivity.textBalance.setText("Баланс:" + balance + " руб, Зарезервированно: " + reserved + " руб");
+            MainActivity.textEmail.setText(email);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 }

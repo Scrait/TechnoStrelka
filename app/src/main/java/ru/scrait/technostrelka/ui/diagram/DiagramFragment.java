@@ -9,15 +9,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,12 +41,14 @@ import java.util.stream.Collectors;
 
 import ru.scrait.technostrelka.databinding.FragmentDiagramBinding;
 import ru.scrait.technostrelka.ui.auth.AuthActivity;
+import ru.scrait.technostrelka.utils.DevUtils;
 
 public class DiagramFragment extends Fragment {
 
     private FragmentDiagramBinding binding;
     private List<String> categories = new ArrayList<>();
     private List<String> sums = new ArrayList<>();
+    private String forLegend = "";
     private ArrayList<BarEntry> ds1 = new ArrayList<>();
     private ArrayList<BarEntry> ds2 = new ArrayList<>();
     private int x = 1;
@@ -70,9 +77,9 @@ public class DiagramFragment extends Fragment {
                         sums.add(DataSnapshot.child("sum").getValue().toString());
                     }
                 }
-                Log.e("categories", categories.toString());
-                Log.e("sums", sums.toString());
-                Snackbar.make(getView(), "Добавилось", Snackbar.LENGTH_LONG).show();
+                if (DevUtils.isCodding) {
+                    Snackbar.make(getView(), "Добавилось", Snackbar.LENGTH_LONG).show();
+                }
             }
 
             @Override
@@ -96,37 +103,50 @@ public class DiagramFragment extends Fragment {
                         e -> 1,
                         Integer::sum));
 
-        frequency.forEach((k, v) -> trahalka(k));
+        frequency.forEach((k, v) -> pastilka(k));
 
         final BarChart barChart = binding.chart;
-        BarDataSet barDataSet = new BarDataSet(ds1, "Diagram");
-        BarDataSet barDataSet2 = new BarDataSet(ds2, "Pon");
+        BarDataSet barDataSet = new BarDataSet(ds1, forLegend);
         barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        barDataSet.setValueTextColor(Color.BLACK);
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            barDataSet.setValueTextColor(Color.WHITE);
+            barDataSet.setBarBorderColor(Color.WHITE);
+            barDataSet.setBarShadowColor(Color.WHITE);
+        } else {
+            barDataSet.setValueTextColor(Color.BLACK);
+            barDataSet.setBarBorderColor(Color.BLACK);
+            barDataSet.setBarShadowColor(Color.BLACK);
+        }
         barDataSet.setValueTextSize(20f);
 
         BarData barData = new BarData(barDataSet);
-        BarData barData2 = new BarData(barDataSet2);
-
 
         Legend legend = barChart.getLegend();
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            legend.setTextColor(Color.WHITE);
+        } else {
+            legend.setTextColor(Color.BLACK);
+        }
         legend.setEnabled(true);
 
         barChart.setFitBars(true);
         barChart.setData(barData);
-        barChart.getDescription().setText("Категории трат");
+        barChart.getDescription().setEnabled(false);
         barChart.animateY(2000);
         categories.clear();
         sums.clear();
     }
 
-    private void trahalka(String k) {
-        int pizda = 0;
-        for (int i = 0; i < categories.size(); i++) {
-            if (categories.get(i).equals(k)) pizda += Float.parseFloat(sums.get(i));
+    private void pastilka(String k) {
+        if (k != null) {
+            forLegend += k + " ";
         }
-        ds1.add(new BarEntry(x, pizda));
-        ds2.add(new BarEntry(x - 1, pizda - 1));
+        int y = 0;
+        for (int i = 0; i < categories.size(); i++) {
+            if (categories.get(i).equals(k)) y += Float.parseFloat(sums.get(i));
+        }
+        ds1.add(new BarEntry(x, y));
+        ds2.add(new BarEntry(x - 1, y - 1));
         x += 10 / categories.size();
     }
 
