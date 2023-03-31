@@ -2,6 +2,8 @@ package ru.scrait.technostrelka.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -133,15 +135,16 @@ public class DialogUtils {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseDatabase databaseReferences = FirebaseDatabase.getInstance();
         final DatabaseReference myRefetance = databaseReferences.getReference(AuthActivity.USER_KEY);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "WalletChannel")
-                .setContentTitle("БАЛАНС ОТРИЦАТИЛЕН!")
-                .setContentText("Необходимо внести большк средств")
-                .setOngoing(true)
-                .setAutoCancel(false)
-                .setSmallIcon(R.drawable.img)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
+        String CHANNEL_ID = "my_channel_01";
+
+        Notification notification = new Notification.Builder(context)
+                .setContentTitle("БАЛАНС ОТРИЦАТЕЛЕН!")
+                .setContentText("Необходимо внести больше средств")
+                .setSmallIcon(R.drawable.img)
+                .setChannelId(CHANNEL_ID)
+                .build();
         if (currentUser != null) {
             databaseReferenceBalance = myRefetance.child(currentUser.getUid()).child("balance");
             databaseReferenceReserved = myRefetance.child(currentUser.getUid()).child("reservedSum");
@@ -152,13 +155,13 @@ public class DialogUtils {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     balance = snapshot.getValue(Float.class);
                     ProfileUtils.update(balance, reserved, currentUser.getEmail());
-                    if (balance < 100.0f) {
+                    if (balance < 0) {
                         // Show notification
-                        notificationManagerCompat.notify(101, builder.build());
+                        mNotificationManager.notify(1, notification);
 
                     } else {
                         // Close notification
-                        notificationManagerCompat.cancel(101);
+                        mNotificationManager.cancel(1);
 
                     }
                 }
