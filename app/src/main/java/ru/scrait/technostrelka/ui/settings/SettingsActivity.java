@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import ru.scrait.technostrelka.R;
 import ru.scrait.technostrelka.ui.auth.AuthActivity;
+import ru.scrait.technostrelka.utils.DialogUtils;
 
 public class SettingsActivity extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
@@ -37,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 }
+                DialogUtils.updateBD(SettingsActivity.this);
             }
         });
     }

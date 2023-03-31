@@ -8,7 +8,18 @@ public class Transaction {
     public float sum;
     public String type;
 
+    public Transaction() {
+
+    }
+
     public Transaction(String category, float sum, String type) {
+        this.category = category;
+        this.date = new Date().toString();
+        this.sum = sum;
+        this.type = type;
+    }
+
+    public Transaction(String category, float sum, String type, String date) {
         this.category = category;
         this.date = new Date().toString();
         this.sum = sum;

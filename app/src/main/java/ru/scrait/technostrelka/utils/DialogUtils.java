@@ -122,7 +122,7 @@ public class DialogUtils {
         });
     }
 
-    private static void updateBD(Context context) {
+    public static void updateBD(Context context) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final FirebaseDatabase databaseReferences = FirebaseDatabase.getInstance();
         final DatabaseReference myRefetance = databaseReferences.getReference(AuthActivity.USER_KEY);
