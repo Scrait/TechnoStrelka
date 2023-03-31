@@ -35,6 +35,7 @@ public class DialogUtils {
     private static DatabaseReference databaseReferenceReserved = null;
 
     public static void onNewTransaction(String sumFromReceipt, Context context, View view) {
+        updateBD(context);
         Dialog dialog = new Dialog(context);
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference userReferance = FirebaseDatabase.getInstance().getReference(AuthActivity.USER_KEY).child(currentUser.getUid());
@@ -54,7 +55,9 @@ public class DialogUtils {
                     moneyReferance.child(String.valueOf(date)).setValue(transaction).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            databaseReferenceBalance.setValue(balance - Float.parseFloat(sumFromReceipt));
                             Snackbar.make(view, "Трата успешно добавлена", Snackbar.LENGTH_LONG).show();
+                            updateBD(context);
                         }
                     });
                     dialog.dismiss();
@@ -74,14 +77,20 @@ public class DialogUtils {
                 public void onClick(View view) {
                     Transaction transaction;
                     if (value_of_transaction.isChecked()) {
-                        transaction = new Transaction("доход", Float.parseFloat(sum.getText().toString()), "доход".toUpperCase());
+                        transaction = new Transaction("доход".toUpperCase(), Float.parseFloat(sum.getText().toString()), "доход".toUpperCase());
                     } else {
                         transaction = new Transaction(category.getSelectedItem().toString(), Float.parseFloat(sum.getText().toString()), "рассход".toUpperCase());
                     }
                     moneyReferance.child(String.valueOf(date)).setValue(transaction).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+                            if (value_of_transaction.isChecked()) {
+                                databaseReferenceBalance.setValue(balance + Float.parseFloat(sum.getText().toString()));
+                            } else {
+                                databaseReferenceBalance.setValue(balance - Float.parseFloat(sum.getText().toString()));
+                            }
                             Snackbar.make(view, "Трата успешно добавлена", Snackbar.LENGTH_LONG).show();
+                            updateBD(context);
                         }
                     });
                     dialog.dismiss();
@@ -135,7 +144,7 @@ public class DialogUtils {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     balance = snapshot.getValue(Float.class);
                     ProfileUtils.update(balance, reserved, currentUser.getEmail());
-                    if (balance < 0) {
+                    if (balance < 100.0f) {
                         // Show notification
                         notificationManagerCompat.notify(101, builder.build());
 
