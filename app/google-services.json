@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "298701689992",
+    "firebase_url": "https://onlinewallet-edffd-default-rtdb.firebaseio.com",
+    "project_id": "onlinewallet-edffd",
+    "storage_bucket": "onlinewallet-edffd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298701689992:android:4d1eacc33eeeb07e203b3d",
+        "android_client_info": {
+          "package_name": "com.example.wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACbQksxzZNi-7i31qve8kiOomT-Y-hh38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298701689992:android:3f6663a3d16d8105203b3d",
+        "android_client_info": {
+          "package_name": "com.tapps.wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACbQksxzZNi-7i31qve8kiOomT-Y-hh38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298701689992:android:c80cfce2cf187eef203b3d",
+        "android_client_info": {
+          "package_name": "ru.scrait.technostrelka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACbQksxzZNi-7i31qve8kiOomT-Y-hh38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298701689992-5j98b23bho2s1kvc5u5476qr433435g5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
